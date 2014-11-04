@@ -32,9 +32,17 @@ class DatasetEngineABC:
         return '<DatasetEngine type={0} endpoint={1}>'.format(self.type, self.api_endpoint)
 
     @abstractmethod
-    def search(self, *args, **kwargs):
+    def search_datasets(self, query, **kwargs):
         """
-        This method is used to search for datasets or resources given a set of query terms.
+        This method is used to search for datasets that match a set of query terms.
+        :return:
+        """
+        return NotImplemented
+
+    @abstractmethod
+    def search_resources(self, query, **kwargs):
+        """
+        This method is used to search for resources that match a set of query terms.
         :return:
         """
         return NotImplemented

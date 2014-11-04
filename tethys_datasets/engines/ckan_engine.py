@@ -18,7 +18,7 @@ class CKANDatasetEngine(DatasetEngineABC):
         """
         return 'CKAN'
 
-    def _execute_api_request(self, method, data_dictionary, console=False, error_404=None):
+    def _execute_api_request(self, method, data_dictionary, console=False, error=None):
         """
         Will return the result dictionary or None if an error occurs.
         """
@@ -36,16 +36,26 @@ class CKANDatasetEngine(DatasetEngineABC):
             response = urllib2.urlopen(request, data_string)
         except urllib2.HTTPError as e:
             if e.code == 404:
-                if error_404:
-                    print(error_404)
+                if error and error['404']:
+                    print(error['404'])
                 else:
                     print('HTTP ERROR 404: The dataset service could not be found at {0}. Please check the API endpoint '
                           'and try again.'.format(self.api_endpoint))
                 return None
 
-            if e.code == 500:
-                print('HTTP ERROR 500: The dataset service experienced an internal error. Ensure that the service is'
-                      'functioning properly, and try again.')
+            elif e.code == 500:
+                if error and error['500']:
+                    print(error['500'])
+                else:
+                    print('HTTP ERROR 500: The dataset service experienced an internal error. Ensure that the service is'
+                          'functioning properly, and try again.')
+                return None
+
+            elif e.code == 409:
+                if error and error['409']:
+                    print(error['409'])
+                else:
+                    print(e)
                 return None
 
             else:
@@ -65,11 +75,86 @@ class CKANDatasetEngine(DatasetEngineABC):
 
         return response_dict
 
-    def search(self, console=False, **kwargs):
+    def search_datasets(self, query, console=False, **kwargs):
         """
-        Search CKAN datasets given query.
-        :return:
+        Search CKAN datasets that match a query.
+
+        Wrapper for the CKAN search_datasets API method. See the CKAN API docs for this methods to see applicable
+        options (http://docs.ckan.org/en/ckan-2.2/api.html).
+
+        Args:
+          query (dict): Key value pairs representing field and values to search for.
+          console (bool, optional): Pretty print the result to the console for debugging. Defaults to False.
+          **kwargs: Any number of optional keyword arguments for the method (see CKAN docs).
+
+        Returns:
+          The response dictionary or None if an error occurs.
         """
+        # Assemble data dictionary
+        data = kwargs
+
+        # Assemble the query parameters
+        query_terms = []
+
+        if len(query.keys()) > 1:
+            for key, value in query.iteritems():
+                query_terms.append('{0}:{1}'.format(key, value))
+        else:
+            for key, value in query.iteritems():
+                query_terms = '{0}:{1}'.format(key, value)
+
+        data['q'] = query_terms
+
+        # Special error
+        error_409 = 'HTTP ERROR 409: Ensure query fields are valid and try again.'
+
+        # Execute
+        result = self._execute_api_request(method='package_search',
+                                           data_dictionary=data,
+                                           console=console,
+                                           error={'409': error_409})
+        return result
+
+    def search_resources(self, query, console=False, **kwargs):
+        """
+        Search CKAN resources that match a query.
+
+        Wrapper for the CKAN search_resources API method. See the CKAN API docs for this methods to see applicable
+        options (http://docs.ckan.org/en/ckan-2.2/api.html).
+
+        Args:
+          query (dict): Key value pairs representing field and values to search for.
+          console (bool, optional): Pretty print the result to the console for debugging. Defaults to False.
+          **kwargs: Any number of optional keyword arguments for the method (see CKAN docs).
+
+        Returns:
+          The response dictionary or None if an error occurs.
+        """
+        # Assemble data dictionary
+        data = kwargs
+
+        # Assemble the query parameters
+        query_terms = []
+        if len(query.keys()) > 1:
+            for key, value in query.iteritems():
+                query_terms.append('{0}:{1}'.format(key, value))
+        else:
+            for key, value in query.iteritems():
+                query_terms = '{0}:{1}'.format(key, value)
+
+        data['query'] = query_terms
+
+        # Special error
+        error_409 = 'HTTP ERROR 409: Ensure query fields are valid and try again.'
+
+        # Execute
+        result = self._execute_api_request(method='resource_search',
+                                           data_dictionary=data,
+                                           console=console,
+                                           error={'409': error_409})
+
+        return result
+
 
     def list_datasets(self, console=False, with_resources=False, **kwargs):
         """
@@ -95,7 +180,6 @@ class CKANDatasetEngine(DatasetEngineABC):
             result = self._execute_api_request(method='current_package_list_with_resources',
                                                data_dictionary=kwargs,
                                                console=console)
-
         return result
 
     def get_dataset(self, dataset_id, console=False, **kwargs):
@@ -106,7 +190,7 @@ class CKANDatasetEngine(DatasetEngineABC):
         (http://docs.ckan.org/en/ckan-2.2/api.html).
 
         Args:
-          id (string): The id or name of the dataset to retrieve.
+          dataset_id (string): The id or name of the dataset to retrieve.
           console (bool, optional): Pretty print the result to the console for debugging. Defaults to False.
           **kwargs: Any number of optional keyword arguments for the method (see CKAN docs).
 
@@ -125,15 +209,38 @@ class CKANDatasetEngine(DatasetEngineABC):
         result = self._execute_api_request(method='package_show',
                                            data_dictionary=data,
                                            console=console,
-                                           error_404=error_404)
-
+                                           error={'404': error_404})
         return result
 
-    def get_resource(self, console=False, **kwargs):
+    def get_resource(self, resource_id, console=False, **kwargs):
         """
         Retrieve CKAN resource
-        :return:
+
+        Wrapper for the CKAN resource_show API method. See the CKAN API docs for this method to see applicable options
+        (http://docs.ckan.org/en/ckan-2.2/api.html).
+
+        Args:
+          resource_id (string): The id or name of the resource to retrieve.
+          console (bool, optional): Pretty print the result to the console for debugging. Defaults to False.
+          **kwargs: Any number of optional keyword arguments for the method (see CKAN docs).
+
+        Returns:
+          The response dictionary or None if an error occurs.
         """
+        # Assemble data dictionary
+        data = kwargs
+        data['id'] = resource_id
+
+        # Error message
+        error_404 = 'HTTP ERROR 404: The resource could not be found. Check that the id provided is valid ' \
+                    'and that the dataset service at {0} is running properly, then try again.'.format(self.api_endpoint)
+
+        # Execute
+        result = self._execute_api_request(method='resource_show',
+                                           data_dictionary=data,
+                                           console=console,
+                                           error={'404': error_404})
+        return result
 
     def create_dataset(self, console=False, **kwargs):
         """
