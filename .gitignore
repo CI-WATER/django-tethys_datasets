@@ -1,1 +1,9 @@
-# Created by .gitignore support plugin (hsz.mobi)
+*.pyc
+*.class
+*.pyo
+*.pydevproject
+*.project
+*.idea
+*.sqlite3
+*.db
+*.egg-info
