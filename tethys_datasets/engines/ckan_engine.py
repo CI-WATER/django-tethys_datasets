@@ -24,92 +24,92 @@ class CKANDatasetEngine(DatasetEngineABC):
     # api_key = '8cd924a8-48d3-452a-becf-d5ec19e9801b' ##TODO: Stop hardcoding API key
     api_key = '003654e6-cd89-46a6-9035-28e4037b44d6'
 
-    def _execute_api_request(self, method, data, headers=None, error=None, console=False):
-        """
-        Execute the REST API method on the API endpoint.
-
-        Args:
-          method (string): Name of the REST API method to execute (e.g.: 'resource_show')
-          data (dict): Dictionary of key-value arguments to the method.
-          error (dict, optional): Override the default error messages. (e.g. {'500': 'Custom 500 message'})
-          console (bool, optional): Print resulting JSON to the console for debugging. Defaults to False.
-
-        Returns:
-          dict: Response JSON object parsed into a dictionary.
-        """
-        # Construct the method url
-        method_url = '{0}/{1}'.format(self.api_endpoint, method)
-
-        # Execute the method
-        request = urllib2.Request(method_url)
-        # request.add_header('Authorization', '003654e6-cd89-46a6-9035-28e4037b44d6')
-        request.add_header('Authorization', '8cd924a8-48d3-452a-becf-d5ec19e9801b')
-        request.add_header('X-CKAN-API-Key', '8cd924a8-48d3-452a-becf-d5ec19e9801b')
-
-        # Add other headers
-        if headers and isinstance(headers, dict):
-            for name, value in headers.iteritems():
-                request.add_header(name, value)
-
-        # Create the data string from dictionary passed
-        if isinstance(data, dict):
-            # In the case of JSON parameters provided via dictionary
-            data_string = urllib.quote(json.dumps(data))
-        else:
-            # In the case of multipart form data
-            data_string = urllib.quote(data)
-
-        request.add_data(data_string)
-
-        try:
-            response = urllib2.urlopen(request)
-        except urllib2.HTTPError as e:
-            if e.code == 400:
-                if error and error['400']:
-                    print(error['400'])
-                else:
-                    print(e)
-                return None
-
-            elif e.code == 404:
-                if error and error['404']:
-                    print(error['404'])
-                else:
-                    print('HTTP ERROR 404: The dataset service could not be found at {0}. Please check the API endpoint '
-                          'and try again.'.format(self.api_endpoint))
-                return None
-
-            elif e.code == 409:
-                if error and error['409']:
-                    print(error['409'])
-                else:
-                    print(e)
-                return None
-
-            elif e.code == 500:
-                if error and error['500']:
-                    print(error['500'])
-                else:
-                    print('HTTP ERROR 500: The dataset service experienced an internal error. Ensure that the service is'
-                          'functioning properly, and try again.')
-                return None
-
-            else:
-                print(e)
-                return None
-
-        if response.code != 200:
-            print('WARNING: Server responded with code {0}. Check that the dataset service is running and try ' \
-                  'again.'.format(response.code))
-            return None
-
-        # Convert CKAN response JSON into dictionary
-        response_dict = json.loads(response.read())
-
-        if console:
-            pprint.pprint(response_dict)
-
-        return response_dict
+    # def _execute_api_request(self, method, data, headers=None, error=None, console=False):
+    #     """
+    #     Execute the REST API method on the API endpoint.
+    #
+    #     Args:
+    #       method (string): Name of the REST API method to execute (e.g.: 'resource_show')
+    #       data (dict): Dictionary of key-value arguments to the method.
+    #       error (dict, optional): Override the default error messages. (e.g. {'500': 'Custom 500 message'})
+    #       console (bool, optional): Print resulting JSON to the console for debugging. Defaults to False.
+    #
+    #     Returns:
+    #       dict: Response JSON object parsed into a dictionary.
+    #     """
+    #     # Construct the method url
+    #     method_url = '{0}/{1}'.format(self.api_endpoint, method)
+    #
+    #     # Execute the method
+    #     request = urllib2.Request(method_url)
+    #     # request.add_header('Authorization', '003654e6-cd89-46a6-9035-28e4037b44d6')
+    #     request.add_header('Authorization', '8cd924a8-48d3-452a-becf-d5ec19e9801b')
+    #     request.add_header('X-CKAN-API-Key', '8cd924a8-48d3-452a-becf-d5ec19e9801b')
+    #
+    #     # Add other headers
+    #     if headers and isinstance(headers, dict):
+    #         for name, value in headers.iteritems():
+    #             request.add_header(name, value)
+    #
+    #     # Create the data string from dictionary passed
+    #     if isinstance(data, dict):
+    #         # In the case of JSON parameters provided via dictionary
+    #         data_string = urllib.quote(json.dumps(data))
+    #     else:
+    #         # In the case of multipart form data
+    #         data_string = urllib.quote(data)
+    #
+    #     request.add_data(data_string)
+    #
+    #     try:
+    #         response = urllib2.urlopen(request)
+    #     except urllib2.HTTPError as e:
+    #         if e.code == 400:
+    #             if error and error['400']:
+    #                 print(error['400'])
+    #             else:
+    #                 print(e)
+    #             return None
+    #
+    #         elif e.code == 404:
+    #             if error and error['404']:
+    #                 print(error['404'])
+    #             else:
+    #                 print('HTTP ERROR 404: The dataset service could not be found at {0}. Please check the API endpoint '
+    #                       'and try again.'.format(self.api_endpoint))
+    #             return None
+    #
+    #         elif e.code == 409:
+    #             if error and error['409']:
+    #                 print(error['409'])
+    #             else:
+    #                 print(e)
+    #             return None
+    #
+    #         elif e.code == 500:
+    #             if error and error['500']:
+    #                 print(error['500'])
+    #             else:
+    #                 print('HTTP ERROR 500: The dataset service experienced an internal error. Ensure that the service is'
+    #                       'functioning properly, and try again.')
+    #             return None
+    #
+    #         else:
+    #             print(e)
+    #             return None
+    #
+    #     if response.code != 200:
+    #         print('WARNING: Server responded with code {0}. Check that the dataset service is running and try ' \
+    #               'again.'.format(response.code))
+    #         return None
+    #
+    #     # Convert CKAN response JSON into dictionary
+    #     response_dict = json.loads(response.read())
+    #
+    #     if console:
+    #         pprint.pprint(response_dict)
+    #
+    #     return response_dict
 
     def _prepare_request(self, method, data_dict=None, api_key=None, files=None):
         """
@@ -379,7 +379,7 @@ class CKANDatasetEngine(DatasetEngineABC):
 
         return self._parse_response(url, status, response, console)
 
-    def create_resource(self, dataset_id, path='', console=False, **kwargs):
+    def create_resource(self, dataset_id, url=None, file=None, console=False, **kwargs):
         """
         Create CKAN resource
 
@@ -388,22 +388,37 @@ class CKANDatasetEngine(DatasetEngineABC):
 
         Args:
           dataset_id (string): The id or name of the dataset to to which the resource will be added.
-          path (string, optional): Absolute path to a file to upload for the resource.
+          url (string, optional): Url to resource that will be added to the dataset.
+          file (string, optional): Absolute path to a file to upload for the resource.
           console (bool, optional): Pretty print the result to the console for debugging. Defaults to False.
           **kwargs: Any number of optional keyword arguments for the method (see CKAN docs).
 
         Returns:
           The response dictionary or None if an error occurs.
         """
+        # Validate file and url parameters (mutually exclusive)
+        if url and file:
+            raise IOError('The url and file parameters are mutually exclusive: use one, not both.')
+        elif not url and not file:
+            raise IOError('The url or file parameter is required, but do not use both.')
+
         # Assemble the data dictionary
         data_dict = kwargs
         data_dict['package_id'] = dataset_id
 
-        # Prepare file
-        files = None
+        if url:
+            data_dict['url'] = url
 
-        if path and os.path.isfile(path):
-            files = {'file': (os.path.basename(path), open(path, 'rb'))}
+        # Default naming convention
+        if 'name' not in data_dict and file:
+            data_dict['name'] = os.path.basename(file)
+
+        # Prepare file
+        if file:
+            if not os.path.isfile(file):
+                raise IOError('The file "{0}" does not exist.'.format(file))
+            else:
+               files = {'upload': open(file)}
 
         url, data, headers = self._prepare_request(method='resource_create',
                                                    data_dict=data_dict,
@@ -411,7 +426,7 @@ class CKANDatasetEngine(DatasetEngineABC):
 
         status, response = self._execute_request(url=url, data=data, headers=headers, files=files)
 
-        print(status, response)
+        return self._parse_response(url, status, response, console)
 
     def update_dataset(self, dataset_id, console=False, **kwargs):
         """
@@ -477,13 +492,12 @@ class CKANDatasetEngine(DatasetEngineABC):
         data['id'] = resource_id
 
         # Execute
-        result = self._execute_api_request(method='resource_update',
-                                           data=data,
-                                           console=console)
+        url, data, headers = self._prepare_request(method='resource_update', data_dict=data)
+        status, response = self._execute_request(url=url, data=data, headers=headers)
+
+        return self._parse_response(url, status, response, console)
 
         # TODO: The resource_update method only returns a 409 error... address this after resource_create is working. Possible cause is that other parameters may be required...
-
-        return result
 
     def delete_dataset(self, dataset_id, console=False, **kwargs):
         """
