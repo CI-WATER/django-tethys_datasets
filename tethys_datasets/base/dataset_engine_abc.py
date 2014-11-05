@@ -11,6 +11,27 @@ class DatasetEngineABC:
         """
         return self._api_endpoint
 
+    @property
+    def apikey(self):
+        """
+        API Endpoint (e.g.: www.example.com/api)
+        """
+        return self._apikey
+
+    @property
+    def username(self):
+        """
+        API Endpoint (e.g.: www.example.com/api)
+        """
+        return self._username
+
+    @property
+    def password(self):
+        """
+        API Endpoint (e.g.: www.example.com/api)
+        """
+        return self._password
+
     @abstractproperty
     def type(self):
         """
@@ -18,11 +39,20 @@ class DatasetEngineABC:
         """
         return NotImplemented
 
-    def __init__(self, api_endpoint):
+    def __init__(self, api_endpoint, apikey=None, username=None, password=None):
         """
         Constructor for Dataset Engines.
         """
         self._api_endpoint = api_endpoint
+
+        if apikey:
+            self._apikey = apikey
+
+        if username:
+            self._username = username
+
+        if password:
+            self._password = password
 
     def __repr__(self):
         """
