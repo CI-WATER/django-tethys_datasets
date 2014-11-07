@@ -10,7 +10,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 requires = ['django',
             'requests',]
 
-version = '0.1.0'
+version = '0.2.0'
 setup(
     name='django-tethys_datasets',
     version=version,
