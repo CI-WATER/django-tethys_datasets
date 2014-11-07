@@ -5,6 +5,14 @@ import unittest
 
 from ..engines import CkanDatasetEngine
 
+try:
+    from .test_config import TEST_CKAN_DATASET_SERVICE
+
+except ImportError:
+    print('ERROR: To perform tests, you must create a file in the "tests" package called "test_config.py". In this file'
+          'provide a dictionary called "TEST_CKAN_DATASET_SERVICE" with keys "API_ENDPOINT" and "APIKEY".')
+    exit(1)
+
 
 def random_string_generator(size):
     chars = string.ascii_lowercase + string.digits
@@ -15,8 +23,8 @@ class TestCkanDatasetEngine(unittest.TestCase):
 
     def setUp(self):
         # Create Test Engine
-        self.engine = CkanDatasetEngine(api_endpoint='',
-                                        apikey='')
+        self.engine = CkanDatasetEngine(api_endpoint=TEST_CKAN_DATASET_SERVICE['API_ENDPOINT'],
+                                        apikey=TEST_CKAN_DATASET_SERVICE['APIKEY'])
 
         # Create Test Dataset
         self.test_dataset_name = random_string_generator(10)

@@ -64,15 +64,9 @@ class DatasetEngineABC:
           password (string, optional): Password that will be used to authenticate with the dataset service.
         """
         self._api_endpoint = api_endpoint
-
-        if apikey:
-            self._apikey = apikey
-
-        if username:
-            self._username = username
-
-        if password:
-            self._password = password
+        self._apikey = apikey
+        self._username = username
+        self._password = password
 
     def __repr__(self):
         """
