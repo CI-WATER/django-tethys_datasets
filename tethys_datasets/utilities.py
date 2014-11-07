@@ -1,10 +1,6 @@
-import pprint
 from django.conf import settings
-
 from tethys_apps.base.app_base import TethysAppBase
-
-VALID_TYPES = {'ckan': 'tethys_datasets.engines.CkanDatasetEngine',
-               'hydroshare':''}
+from .valid_engines import VALID_ENGINES
 
 
 class DatasetService:
@@ -19,18 +15,18 @@ class DatasetService:
         self.name = name
 
         # Validate the types
-        if type in VALID_TYPES:
+        if type in VALID_ENGINES:
             self.type = type
-            self.engine = VALID_TYPES[type]
+            self.engine = VALID_ENGINES[type]
         else:
-            if len(VALID_TYPES) > 2:
-                comma_separated_types = ', '.join('"{0}"'.format(t) for t in VALID_TYPES.keys()[:-1])
-                last_type = '"{0}"'.format(VALID_TYPES.keys()[-1])
+            if len(VALID_ENGINES) > 2:
+                comma_separated_types = ', '.join('"{0}"'.format(t) for t in VALID_ENGINES.keys()[:-1])
+                last_type = '"{0}"'.format(VALID_ENGINES.keys()[-1])
                 valid_types_string = '{0}, and {1}'.format(comma_separated_types, last_type)
-            elif len(VALID_TYPES) == 2:
-                valid_types_string = '"{0}" and "{1}"'.format(VALID_TYPES.keys()[0], VALID_TYPES.keys()[1])
+            elif len(VALID_ENGINES) == 2:
+                valid_types_string = '"{0}" and "{1}"'.format(VALID_ENGINES.keys()[0], VALID_ENGINES.keys()[1])
             else:
-                valid_types_string = '"{0}"'.format(VALID_TYPES.keys()[0])
+                valid_types_string = '"{0}"'.format(VALID_ENGINES.keys()[0])
 
             raise ValueError('The value "{0}" is not a valid for argument "type" of DatasetService. Valid values for '
                              '"type" argument include {1}.'.format(type, valid_types_string))

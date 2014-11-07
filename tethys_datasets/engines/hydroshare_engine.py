@@ -102,7 +102,7 @@ class HydroShareDatasetEngine(DatasetEngineABC):
         Returns:
           list: A list of dataset names or a list of dataset dictionaries if with_resources is true.
         """
-       pass
+        pass
 
     def get_dataset(self, dataset_id, console=False, **kwargs):
         """
