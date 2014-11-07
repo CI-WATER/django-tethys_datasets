@@ -1,9 +1,9 @@
 import requests
 
-from ..base import DatasetEngineABC
+from ..base import DatasetEngine
 
 
-class HydroShareDatasetEngine(DatasetEngineABC):
+class HydroShareDatasetEngine(DatasetEngine):
     """
     Definition for HydroShare Dataset Engine objects.
     """

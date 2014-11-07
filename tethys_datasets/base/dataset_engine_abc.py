@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 
 
-class DatasetEngineABC:
+class DatasetEngine:
     """
     The base definition for DatasetEngine objects.
 

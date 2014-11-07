@@ -3,10 +3,10 @@ import json
 import pprint
 import requests
 
-from ..base import DatasetEngineABC
+from ..base import DatasetEngine
 
 
-class CkanDatasetEngine(DatasetEngineABC):
+class CkanDatasetEngine(DatasetEngine):
     """
     Definition for CKAN Dataset Engine objects.
     """
