@@ -2,7 +2,8 @@ import os
 import random
 import string
 import unittest
-from engines import CkanDatasetEngine
+
+from ..engines import CkanDatasetEngine
 
 
 def random_string_generator(size):
@@ -16,7 +17,6 @@ class TestCkanDatasetEngine(unittest.TestCase):
         # Create Test Engine
         self.engine = CkanDatasetEngine(api_endpoint='',
                                         apikey='')
-        ## TODO: Create function that will be used to get the dataset credentials from the settings.py file.
 
         # Create Test Dataset
         self.test_dataset_name = random_string_generator(10)

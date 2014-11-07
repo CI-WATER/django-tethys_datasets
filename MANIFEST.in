@@ -2,3 +2,4 @@ include LICENSE
 include README.rst
 recursive-include tethys_datasets/static *
 recursive-include tethys_datasets/templates *
+recursive-include tethys_datasets/tests/support *
