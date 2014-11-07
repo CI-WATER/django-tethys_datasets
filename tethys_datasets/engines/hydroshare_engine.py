@@ -33,7 +33,7 @@ class HydroShareDatasetEngine(DatasetEngine):
     @staticmethod
     def _execute_request(url, data, headers, file=None):
         """
-        Execute the request using the requests module. See: https://github.com/ckan/ckanapi/tree/master/ckanapi/common.py
+        Execute the request using the requests module.
 
         Args:
           url (string): The request url, usually the 'url' returned by '_prepare_request'.
@@ -107,9 +107,6 @@ class HydroShareDatasetEngine(DatasetEngine):
     def get_dataset(self, dataset_id, console=False, **kwargs):
         """
         Retrieve HydroShare resource
-
-        Wrapper for the HydroShare package_show API method. See the HydroShare API docs for this method to see applicable options
-        (http://docs.ckan.org/en/ckan-2.2/api.html).
 
         Args:
           dataset_id (string): The id or name of the dataset to retrieve.
@@ -198,9 +195,6 @@ class HydroShareDatasetEngine(DatasetEngine):
     def delete_dataset(self, dataset_id, console=False, **kwargs):
         """
         Delete HydroShare resource
-
-        Wrapper for the HydroShare package_delete API method. See the HydroShare API docs for this method to see applicable options
-        (http://docs.ckan.org/en/ckan-2.2/api.html).
 
         Args:
           dataset_id (string): The id or name of the dataset to delete.

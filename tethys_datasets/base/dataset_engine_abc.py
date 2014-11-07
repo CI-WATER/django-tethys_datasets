@@ -84,7 +84,7 @@ class DatasetEngine:
           **kwargs: Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
 
@@ -98,7 +98,7 @@ class DatasetEngine:
           **kwargs (kwargs, optional): Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
 
@@ -111,7 +111,7 @@ class DatasetEngine:
           **kwargs (kwargs, optional): Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
 
@@ -125,7 +125,7 @@ class DatasetEngine:
           **kwargs (kwargs, optional): Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
 
@@ -139,7 +139,7 @@ class DatasetEngine:
           **kwargs (kwargs, optional): Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
 
@@ -153,7 +153,7 @@ class DatasetEngine:
           **kwargs (kwargs, optional): Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
 
@@ -169,7 +169,7 @@ class DatasetEngine:
           **kwargs (kwargs, optional): Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
 
@@ -183,7 +183,7 @@ class DatasetEngine:
           **kwargs (kwargs, optional): Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
 
@@ -199,7 +199,7 @@ class DatasetEngine:
           **kwargs (kwargs, optional): Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
 
@@ -213,7 +213,7 @@ class DatasetEngine:
           **kwargs (kwargs, optional): Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
 
@@ -227,6 +227,6 @@ class DatasetEngine:
           **kwargs (kwargs, optional): Any number of additional keyword arguments.
 
         Returns:
-          (dict): Response dictionary (see note in class docs for more info)
+          (dict): Response dictionary
         """
         return NotImplemented
