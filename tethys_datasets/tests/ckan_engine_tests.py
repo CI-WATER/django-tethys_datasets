@@ -23,7 +23,7 @@ class TestCkanDatasetEngine(unittest.TestCase):
 
     def setUp(self):
         # Create Test Engine
-        self.engine = CkanDatasetEngine(api_endpoint=TEST_CKAN_DATASET_SERVICE['API_ENDPOINT'],
+        self.engine = CkanDatasetEngine(endpoint=TEST_CKAN_DATASET_SERVICE['ENDPOINT'],
                                         apikey=TEST_CKAN_DATASET_SERVICE['APIKEY'])
 
         # Create Test Dataset
