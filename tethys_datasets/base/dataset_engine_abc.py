@@ -19,11 +19,11 @@ class DatasetEngineABC:
     __metaclass__ = ABCMeta
 
     @property
-    def api_endpoint(self):
+    def endpoint(self):
         """
         API Endpoint (e.g.: www.example.com/api).
         """
-        return self._api_endpoint
+        return self._endpoint
 
     @property
     def apikey(self):
@@ -53,7 +53,7 @@ class DatasetEngineABC:
         """
         return NotImplemented
 
-    def __init__(self, api_endpoint, apikey=None, username=None, password=None):
+    def __init__(self, endpoint, apikey=None, username=None, password=None):
         """
         Default constructor for Dataset Engines.
 
@@ -63,7 +63,7 @@ class DatasetEngineABC:
           username (string, optional): Username that will be used to authenticate with the dataset service.
           password (string, optional): Password that will be used to authenticate with the dataset service.
         """
-        self._api_endpoint = api_endpoint
+        self._endpoint = endpoint
         self._apikey = apikey
         self._username = username
         self._password = password
@@ -72,7 +72,7 @@ class DatasetEngineABC:
         """
         Representation of Dataset Engine object for debugging purposes.
         """
-        return '<DatasetEngine type={0} endpoint={1}>'.format(self.type, self.api_endpoint)
+        return '<DatasetEngine type={0} endpoint={1}>'.format(self.type, self.endpoint)
 
     @abstractmethod
     def search_datasets(self, query, **kwargs):

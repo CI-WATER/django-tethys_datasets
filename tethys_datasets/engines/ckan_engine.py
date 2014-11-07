@@ -52,7 +52,7 @@ class CkanDatasetEngine(DatasetEngineABC):
         headers['X-CKAN-API-Key'] = apikey
         headers['Authorization'] = apikey
 
-        url = '/'.join((self.api_endpoint.rstrip('/'), method))
+        url = '/'.join((self.endpoint.rstrip('/'), method))
 
         return url, data_dict, headers
 
@@ -246,7 +246,7 @@ class CkanDatasetEngine(DatasetEngineABC):
 
         # Error message
         error_404 = 'HTTP ERROR 404: The resource could not be found. Check that the id provided is valid ' \
-                    'and that the dataset service at {0} is running properly, then try again.'.format(self.api_endpoint)
+                    'and that the dataset service at {0} is running properly, then try again.'.format(self.endpoint)
 
         # Execute
         url, data, headers = self._prepare_request(method='resource_show', data_dict=data)

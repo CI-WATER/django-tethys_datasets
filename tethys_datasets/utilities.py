@@ -48,6 +48,9 @@ class DatasetService:
 
 
 def initialize_engine_object(engine, endpoint, apikey=None, username=None, password=None):
+    """
+    Initialize a DatasetEngine object from a string that points at the engine class.
+    """
     # Derive import parts from engine string
     engine_split = engine.split('.')
     module_string = '.'.join(engine_split[:-1])
@@ -58,7 +61,7 @@ def initialize_engine_object(engine, endpoint, apikey=None, username=None, passw
     EngineClass = getattr(module, engine_class_string)
 
     # Create Engine Object
-    engine_instance = EngineClass(api_endpoint=endpoint,
+    engine_instance = EngineClass(endpoint=endpoint,
                                   apikey=apikey,
                                   username=username,
                                   password=password)
