@@ -2,46 +2,66 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 
 
 class DatasetEngineABC:
+    """
+    The base definition for DatasetEngine objects.
+
+    DatasetEngine objects are bound to a web API endpoint via the 'api_endpoint' property. Optionally,
+    they can also be bound with an apikey or a username and password for operations that require
+    authorization.
+
+    Response Dictionary:
+
+    All methods must return a response dictionary. This dictionary must have keys 'success' and either 'result'
+    or 'error'. The value of the 'success' item should be a boolean indicating whether the operation was
+    successful or not. If 'success' is True, then 'result' item will contain the resulting data. If 'success'
+    is False, then 'error' should contain error information.
+    """
     __metaclass__ = ABCMeta
 
     @property
     def api_endpoint(self):
         """
-        API Endpoint (e.g.: www.example.com/api)
+        API Endpoint (e.g.: www.example.com/api).
         """
         return self._api_endpoint
 
     @property
     def apikey(self):
         """
-        API Endpoint (e.g.: www.example.com/api)
+        API key for authorization.
         """
         return self._apikey
 
     @property
     def username(self):
         """
-        API Endpoint (e.g.: www.example.com/api)
+        Username for authorization.
         """
         return self._username
 
     @property
     def password(self):
         """
-        API Endpoint (e.g.: www.example.com/api)
+        Password for authorization.
         """
         return self._password
 
     @abstractproperty
     def type(self):
         """
-        Returns the type of dataset engine.
+        Stores a string representing the type of the dataset engine (e.g.: 'CKAN')
         """
         return NotImplemented
 
     def __init__(self, api_endpoint, apikey=None, username=None, password=None):
         """
-        Constructor for Dataset Engines.
+        Default constructor for Dataset Engines.
+
+        Args:
+          api_endpoint (string): URL of the dataset service API endpoint (e.g.: www.host.com/api)
+          apikey (string, optional): API key that will be used to authenticate with the dataset service.
+          username (string, optional): Username that will be used to authenticate with the dataset service.
+          password (string, optional): Password that will be used to authenticate with the dataset service.
         """
         self._api_endpoint = api_endpoint
 
@@ -56,96 +76,163 @@ class DatasetEngineABC:
 
     def __repr__(self):
         """
-        Representation of object for debugging purposes.
-        :return:
+        Representation of Dataset Engine object for debugging purposes.
         """
         return '<DatasetEngine type={0} endpoint={1}>'.format(self.type, self.api_endpoint)
 
     @abstractmethod
     def search_datasets(self, query, **kwargs):
         """
-        This method is used to search for datasets that match a set of query terms.
-        :return:
+        Search for datasets that match a query.
+
+        Args:
+          query (dict): Key value pairs representing the fields and values of the datasets to be included.
+          **kwargs: Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented
 
     @abstractmethod
     def search_resources(self, query, **kwargs):
         """
-        This method is used to search for resources that match a set of query terms.
-        :return:
+        Search for resources that match a query.
+
+        Args:
+          query (dict): Key value pairs representing the fields and values of the resources to be included.
+          **kwargs (kwargs, optional): Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented
 
     @abstractmethod
     def list_datasets(self, **kwargs):
         """
-        This method is used to return a list names of datasets. Optionally, this method can be used to return a list of
-        dataset objects.
-        :return:
+        List all datasets available from the dataset service.
+
+        Args:
+          **kwargs (kwargs, optional): Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented
 
     @abstractmethod
-    def get_dataset(self, **kwargs):
+    def get_dataset(self, dataset_id, **kwargs):
         """
-        This method is used to retrieve a dataset object for the given id.
-        :return:
+        Retrieve a dataset object.
+
+        Args:
+          dataset_id (string): Identifier of the dataset to retrieve.
+          **kwargs (kwargs, optional): Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented
 
     @abstractmethod
-    def get_resource(self, **kwargs):
+    def get_resource(self, resource_id, **kwargs):
         """
-        This method is used to retrieve a resource object for the given id and dataset.
-        :return:
+        Retrieve a resource object.
+
+        Args:
+          resource_id (string): Identifier of the dataset to retrieve.
+          **kwargs (kwargs, optional): Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented
 
     @abstractmethod
-    def create_dataset(self, **kwargs):
+    def create_dataset(self, name, **kwargs):
         """
-        This method is used to create a new dataset.
-        :return:
+        Create a new dataset.
+
+        Args:
+          name (string): Name of the dataset to create.
+          **kwargs (kwargs, optional): Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented
 
     @abstractmethod
-    def create_resource(self, **kwargs):
+    def create_resource(self, dataset_id, url=None, file=None, **kwargs):
         """
-        This method is used to create/add a new resource to an existing dataset.
-        :return:
+        Create a new resource.
+
+        Args:
+          dataset_id (string): Identifier of the dataset to which the resource will be added.
+          url (string, optional): URL of resource to associate with resource.
+          file (string, optional): Path of file to upload as resource.
+          **kwargs (kwargs, optional): Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented
 
     @abstractmethod
-    def update_dataset(self, **kwargs):
+    def update_dataset(self, dataset_id, **kwargs):
         """
-        This method is used to update existing dataset with the given id.
-        :return:
+        Update an existing dataset.
+
+        Args:
+          dataset_id (string): Identifier of the dataset to update.
+          **kwargs (kwargs, optional): Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented
 
     @abstractmethod
-    def update_resource(self, **kwargs):
+    def update_resource(self, resource_id, url=None, file=None, **kwargs):
         """
-        This method is used to update existing resource with the given id.
-        :return:
+        Update an existing resource.
+
+        Args:
+          resource_id (string): Identifier of the resource to update.
+          url (string): URL of resource to associate with resource.
+          file (string): Path of file to upload as resource.
+          **kwargs (kwargs, optional): Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented
 
     @abstractmethod
-    def delete_dataset(self, **kwargs):
+    def delete_dataset(self, dataset_id, **kwargs):
         """
-        This method is used to delete the dataset with the given id.
-        :return:
+        Delete a dataset.
+
+        Args:
+          dataset_id (string): Identifier of the dataset to delete.
+          **kwargs (kwargs, optional): Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented
 
     @abstractmethod
-    def delete_resource(self, **kwargs):
+    def delete_resource(self, resource_id, **kwargs):
         """
-        This method is used to delete the resource with the given id and dataset.
-        :return:
+        Delete a resource.
+
+        Args:
+          resource_id (string): Identifier of the resource to delete.
+          **kwargs (kwargs, optional): Any number of additional keyword arguments.
+
+        Returns:
+          (dict): Response dictionary (see note in class docs for more info)
         """
         return NotImplemented

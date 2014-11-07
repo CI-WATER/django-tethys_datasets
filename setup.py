@@ -35,4 +35,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
     install_requires = requires,
+    test_suite = 'tethys_datasets.tests'
 )

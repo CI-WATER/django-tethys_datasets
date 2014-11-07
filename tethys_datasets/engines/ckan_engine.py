@@ -6,7 +6,7 @@ import requests
 from ..base import DatasetEngineABC
 
 
-class CKANDatasetEngine(DatasetEngineABC):
+class CkanDatasetEngine(DatasetEngineABC):
     """
     Definition for CKAN Dataset Engine objects.
     """
@@ -18,15 +18,15 @@ class CKANDatasetEngine(DatasetEngineABC):
         """
         return 'CKAN'
 
-    def _prepare_request(self, method, data_dict=None, files=None, apikey=None):
+    def _prepare_request(self, method, data_dict=None, file=None, apikey=None):
         """
-        Preprocess the parameters for CKAN API call. This is derived from CKAN's api client which can be found here:
+        Preprocess the parameters for CKAN API call. This is derived from CKAN's API client which can be found here:
         https://github.com/ckan/ckanapi/tree/master/ckanapi/common.py
 
         Args:
             method (string): The CKAN API method (action) to call (e.g.: 'resource_show').
             data_dict (dict, optional): Dictionary of method (action) arguments.
-            files (dict): Dictionary of file objects to upload.
+            file (dict): Dictionary of file objects to upload.
             apikey (string): The CKAN API key to use for authorization.
 
         Returns:
@@ -37,7 +37,7 @@ class CKANDatasetEngine(DatasetEngineABC):
 
         headers = {}
 
-        if files:
+        if file:
             data_dict = dict((k.encode('utf-8'), v.encode('utf-8'))
                 for (k, v) in data_dict.items())
         else:
@@ -79,9 +79,9 @@ class CKANDatasetEngine(DatasetEngineABC):
         Parse the response and check for errors.
 
         Args:
-          status (string):
-          response (string):
-          console (bool, optional):
+          status (int): Status code of the response.
+          response (string): Response string.
+          console (bool, optional): Pretty print the response to the console for debugging. Defaults to False.
 
         Returns:
           dict: response parsed into a dictionary or raises appropriate error.
@@ -130,9 +130,6 @@ class CKANDatasetEngine(DatasetEngineABC):
 
         data['q'] = query_terms
 
-        # Special error
-        error_409 = 'HTTP ERROR 409: Ensure query fields are valid and try again.'
-
         # Execute
         url, data, headers = self._prepare_request(method='package_search', data_dict=data)
         status, response = self._execute_request(url=url, data=data, headers=headers)
@@ -177,7 +174,7 @@ class CKANDatasetEngine(DatasetEngineABC):
 
         return self._parse_response(status, response, console)
 
-    def list_datasets(self, console=False, with_resources=False, **kwargs):
+    def list_datasets(self, with_resources=False, console=False, **kwargs):
         """
         List CKAN datasets.
 
@@ -185,8 +182,8 @@ class CKANDatasetEngine(DatasetEngineABC):
         these methods to see applicable options (http://docs.ckan.org/en/ckan-2.2/api.html).
 
         Args:
-          console (bool, optional): Pretty print the result to the console for debugging. Defaults to False.
           with_resources (bool, optional): Return a list of dataset dictionaries. Defaults to False.
+          console (bool, optional): Pretty print the result to the console for debugging. Defaults to False.
           **kwargs: Any number of optional keyword arguments for the method (see CKAN docs).
 
         Returns:
@@ -221,10 +218,6 @@ class CKANDatasetEngine(DatasetEngineABC):
         # Assemble data dictionary
         data = kwargs
         data['id'] = dataset_id
-
-        # Error message
-        error_404 = 'HTTP ERROR 404: The dataset could not be found. Check that the id or name provided is valid ' \
-                    'and that the dataset service at {0} is running properly, then try again.'.format(self.api_endpoint)
 
         # Execute
         url, data, headers = self._prepare_request(method='package_show', data_dict=data)
@@ -263,7 +256,7 @@ class CKANDatasetEngine(DatasetEngineABC):
 
     def create_dataset(self, name, console=False, **kwargs):
         """
-        Create CKAN dataset
+        Create a new CKAN dataset.
 
         Wrapper for the CKAN package_create API method. See the CKAN API docs for this method to see applicable options
         (http://docs.ckan.org/en/ckan-2.2/api.html).
@@ -288,14 +281,14 @@ class CKANDatasetEngine(DatasetEngineABC):
 
     def create_resource(self, dataset_id, url=None, file=None, console=False, **kwargs):
         """
-        Create CKAN resource
+        Create a new CKAN resource.
 
         Wrapper for the CKAN resource_create API method. See the CKAN API docs for this method to see applicable options
         (http://docs.ckan.org/en/ckan-2.2/api.html).
 
         Args:
           dataset_id (string): The id or name of the dataset to to which the resource will be added.
-          url (string, optional): Url to resource that will be added to the dataset.
+          url (string, optional): URL for the resource that will be added to the dataset.
           file (string, optional): Absolute path to a file to upload for the resource.
           console (bool, optional): Pretty print the result to the console for debugging. Defaults to False.
           **kwargs: Any number of optional keyword arguments for the method (see CKAN docs).
@@ -321,20 +314,15 @@ class CKANDatasetEngine(DatasetEngineABC):
             data_dict['name'] = os.path.basename(file)
 
         # Prepare file
-        files = None
-
         if file:
             if not os.path.isfile(file):
                 raise IOError('The file "{0}" does not exist.'.format(file))
             else:
-                files = {'upload': open(file)}
+                file = {'upload': open(file)}
 
         # Execute
-        url, data, headers = self._prepare_request(method='resource_create',
-                                                   data_dict=data_dict,
-                                                   files=files)
-
-        status, response = self._execute_request(url=url, data=data, headers=headers, file=files)
+        url, data, headers = self._prepare_request(method='resource_create', data_dict=data_dict, file=file)
+        status, response = self._execute_request(url=url, data=data, headers=headers, file=file)
 
         return self._parse_response(status, response, console)
 
@@ -364,17 +352,19 @@ class CKANDatasetEngine(DatasetEngineABC):
               disassociated with the dataset and float off into the ether. This behavior is modified in this method so
               that these properties are retained by default, unless included in the parameters that are being updated.
         """
-        result = self._execute_api_request(method='package_show',
-                                           data=data)
-        if result['success']:
-            original_dataset = result['result']
+        original_url, original_data, original_headers = self._prepare_request(method='package_show', data_dict=data)
+        original_status, original_response = self._execute_request(url=original_url, data=original_data,
+                                                                   headers=original_headers)
+        original_result = self._parse_response(original_status, original_response)
+
+        if original_result['success']:
+            original_dataset = original_result['result']
 
             if 'resources' not in data:
                 data['resources'] = original_dataset['resources']
 
             if 'tags' not in data:
                 data['tags'] = original_dataset['tags']
-
 
         # Execute
         url, data, headers = self._prepare_request(method='package_update', data_dict=data)
@@ -390,7 +380,9 @@ class CKANDatasetEngine(DatasetEngineABC):
         (http://docs.ckan.org/en/ckan-2.2/api.html).
 
         Args:
-          resource_id (string): The id of the resource to update.
+          resource_id (string): The id of the resource that will be updated.
+          url (string, optional): URL of the resource that will be added to the dataset.
+          file (string, optional): Absolute path to a file to upload for the resource.
           console (bool, optional): Pretty print the result to the console for debugging. Defaults to False.
           **kwargs: Any number of optional keyword arguments for the method (see CKAN docs).
 
@@ -413,8 +405,6 @@ class CKANDatasetEngine(DatasetEngineABC):
             data_dict['name'] = os.path.basename(file)
 
         # Prepare file
-        file = None
-
         if file:
             if not os.path.isfile(file):
                 raise IOError('The file "{0}" does not exist.'.format(file))
@@ -428,7 +418,7 @@ class CKANDatasetEngine(DatasetEngineABC):
                 data_dict['url'] = resource['url']
 
         # Execute
-        url, data, headers = self._prepare_request(method='resource_update', data_dict=data_dict, files=file)
+        url, data, headers = self._prepare_request(method='resource_update', data_dict=data_dict, file=file)
         status, response = self._execute_request(url=url, data=data, headers=headers, file=file)
 
         return self._parse_response(status, response, console)

@@ -1,1 +1,1 @@
-from ckan_engine import CKANDatasetEngine
+from ckan_engine import CkanDatasetEngine
