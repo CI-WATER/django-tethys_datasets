@@ -13,6 +13,6 @@ TEST_HYDROSHARE_DATASET_SERVICE = {
     'API_ENDPOINT': '',
     'API_KEY': '',
     'USERNAME': '',
-    'PASSWORD': ''
+    'PASSWORD': ''asdfsdf
 }
 
