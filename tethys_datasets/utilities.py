@@ -1,6 +1,6 @@
-from django.conf import settings
 from tethys_apps.base.app_base import TethysAppBase
-from .valid_engines import VALID_ENGINES
+from tethys_dataset_services.valid_engines import VALID_ENGINES
+from .models import DatasetService as DsModel
 
 
 class DatasetService:
@@ -95,29 +95,22 @@ def get_dataset_engine(name, app_class=None):
                                                 username=app_dataset_service.username,
                                                 password=app_dataset_service.password)
 
-    # If the dataset engine cannot be found in the app_class, check settings for site-wide dataset engines
-    site_dataset_services = None
-
-    if hasattr(settings, 'TETHYS_DATASET_SERVICES'):
-        site_dataset_services = settings.TETHYS_DATASET_SERVICES
+    # If the dataset engine cannot be found in the app_class, check database for site-wide dataset engines
+    site_dataset_services = DsModel.objects.all()
 
     if site_dataset_services:
         # Search for match
-        for site_dataset_service_name, site_dataset_service in site_dataset_services.iteritems():
+        for site_dataset_service in site_dataset_services:
 
             # If match is found initiate engine object
-            if site_dataset_service_name == name:
-                engine = site_dataset_service['ENGINE']
-                endpoint = site_dataset_service['ENDPOINT']
-                apikey = site_dataset_service['APIKEY'] if 'APIKEY' in site_dataset_service else None
-                username = site_dataset_service['USERNAME'] if 'USERNAME' in site_dataset_service else None
-                password = site_dataset_service['PASSWORD'] if 'PASSWORD' in site_dataset_service else None
+            if site_dataset_service.name == name:
+                dataset_service_object = initialize_engine_object(engine=site_dataset_service.engine.encode('utf-8'),
+                                                                  endpoint=site_dataset_service.endpoint,
+                                                                  apikey=site_dataset_service.apikey,
+                                                                  username=site_dataset_service.username,
+                                                                  password=site_dataset_service.password)
 
-                return initialize_engine_object(engine=engine,
-                                                endpoint=endpoint,
-                                                apikey=apikey,
-                                                username=username,
-                                                password=password)
+                return dataset_service_object
 
     raise NameError('Could not find dataset service with name "{0}". Please check that dataset service with that name '
                     'exists in settings.py or in your app.py.'.format(name))

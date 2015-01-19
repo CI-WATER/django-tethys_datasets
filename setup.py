@@ -8,9 +8,10 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 requires = ['django',
-            'requests',]
+            'requests',
+            'tethys_dataset_services']
 
-version = '0.2.0'
+version = '0.4.0'
 setup(
     name='django-tethys_datasets',
     version=version,
@@ -34,6 +35,6 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
-    install_requires = requires,
-    test_suite = 'tethys_datasets.tests'
+    install_requires=requires,
+    test_suite='tethys_datasets.tests'
 )
