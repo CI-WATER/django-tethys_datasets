@@ -1,5 +1,5 @@
 from django.db import models
-from tethys_dataset_services.valid_engines import VALID_ENGINES
+from tethys_dataset_services.valid_engines import VALID_ENGINES, VALID_SPATIAL_ENGINES
 
 
 # Create your models here.
@@ -27,6 +27,31 @@ class DatasetService(models.Model):
     class Meta:
         verbose_name = 'Dataset Service'
         verbose_name_plural = 'Dataset Services'
+
+    def __unicode__(self):
+        return self.name
+
+
+class SpatialDatasetService(models.Model):
+    """
+    ORM for Spatial Dataset Service settings.
+    """
+    GEOSERVER = VALID_SPATIAL_ENGINES['geoserver']
+
+    ENGINE_CHOICES = (
+        (GEOSERVER, 'GeoServer'),
+    )
+
+    name = models.CharField(max_length=30, unique=True)
+    engine = models.CharField(max_length=200, choices=ENGINE_CHOICES, default=GEOSERVER)
+    endpoint = models.CharField(max_length=1024)
+    apikey = models.CharField(max_length=100, blank=True)
+    username = models.CharField(max_length=100, blank=True)
+    password = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        verbose_name = 'Spatial Dataset Service'
+        verbose_name_plural = 'Spatial Dataset Services'
 
     def __unicode__(self):
         return self.name
