@@ -6,6 +6,7 @@ from django.forms import ModelForm, PasswordInput
 class DatasetServiceForm(ModelForm):
     class Meta:
         model = DatasetService
+        fields = ('name', 'engine', 'endpoint', 'apikey', 'username', 'password')
         widgets = {
             'password': PasswordInput(),
         }
@@ -14,6 +15,7 @@ class DatasetServiceForm(ModelForm):
 class SpatialDatasetServiceForm(ModelForm):
     class Meta:
         model = SpatialDatasetService
+        fields = ('name', 'engine', 'endpoint', 'apikey', 'username', 'password')
         widgets = {
             'password': PasswordInput(),
         }
