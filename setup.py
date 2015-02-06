@@ -11,7 +11,7 @@ requires = ['django',
             'requests',
             'tethys_dataset_services']
 
-version = '0.5.1'
+version = '1.0.0'
 setup(
     name='django-tethys_datasets',
     version=version,
