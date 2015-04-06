@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DatasetService, SpatialDatasetService
+from .models import DatasetService, SpatialDatasetService, WebProcessingService
 from django.forms import ModelForm, PasswordInput
 
 
@@ -37,5 +37,23 @@ class SpatialDatasetServiceAdmin(admin.ModelAdmin):
     fields = ('name', 'engine', 'endpoint', 'apikey', 'username', 'password')
 
 
+class WebProcessingServiceForm(ModelForm):
+    class Meta:
+        model = WebProcessingService
+        fields = ('name', 'endpoint', 'username', 'password')
+        widgets = {
+            'password': PasswordInput(),
+        }
+
+
+class WebProcessingServiceAdmin(admin.ModelAdmin):
+    """
+    Admin model for Web Processing Service Model
+    """
+    form = WebProcessingServiceForm
+    fields = ('name', 'endpoint', 'username', 'password')
+
+
 admin.site.register(DatasetService, DatasetServiceAdmin)
 admin.site.register(SpatialDatasetService, SpatialDatasetServiceAdmin)
+admin.site.register(WebProcessingService, WebProcessingServiceAdmin)

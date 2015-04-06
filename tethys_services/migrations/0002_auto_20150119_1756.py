@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tethys_datasets', '0001_initial'),
+        ('tethys_services', '0001_initial'),
     ]
 
     operations = [
